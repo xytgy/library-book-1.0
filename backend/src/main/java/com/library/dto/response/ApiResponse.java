@@ -17,6 +17,14 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
+    public static ApiResponse<Void> success() {
+        return new ApiResponse<>(200, "操作成功", null);
+    }
+
+    public static ApiResponse<Void> success(String message) {
+        return new ApiResponse<>(200, message, null);
+    }
+
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(200, "操作成功", data);
     }
