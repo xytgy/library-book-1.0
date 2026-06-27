@@ -8,6 +8,7 @@ import com.library.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,23 +16,20 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "认证管理", description = "用户登录、注册")
 public class AuthController {
 
-    private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
     public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        // TODO: 实现登录逻辑
-        return null;
+        LoginResponse response = authService.login(request);
+        return ApiResponse.success("登录成功", response);
     }
 
     @PostMapping("/register")
     @Operation(summary = "用户注册")
     public ApiResponse<LoginResponse> register(@Valid @RequestBody RegisterRequest request) {
-        // TODO: 实现注册逻辑
-        return null;
+        LoginResponse response = authService.register(request);
+        return ApiResponse.success("注册成功", response);
     }
 }
