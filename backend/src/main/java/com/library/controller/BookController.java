@@ -7,8 +7,9 @@ import com.library.model.Book;
 import com.library.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,11 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "书籍管理", description = "书籍的增删改查")
 public class BookController {
 
-    private final BookService bookService;
-
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    @Autowired
+    private BookService bookService;
 
     @GetMapping
     @Operation(summary = "获取书籍列表")
@@ -29,36 +27,39 @@ public class BookController {
             @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        // TODO: 实现查询逻辑
-        return null;
+        PageResponse<Book> response = bookService.getBooks(search, category, page, pageSize);
+        return ApiResponse.success(response);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取书籍详情")
     public ApiResponse<Book> getBookById(@PathVariable Long id) {
-        // TODO: 实现详情逻辑
-        return null;
+        Book book = bookService.getBookById(id);
+        return ApiResponse.success(book);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "添加书籍（管理员）")
     public ApiResponse<Book> createBook(@Valid @RequestBody BookRequest request) {
-        // TODO: 实现添加逻辑
-        return null;
+        Book book = bookService.createBook(request);
+        return ApiResponse.success("添加成功", book);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "更新书籍（管理员）")
     public ApiResponse<Book> updateBook(@PathVariable Long id,
                                         @Valid @RequestBody BookRequest request) {
-        // TODO: 实现更新逻辑
-        return null;
+        Book book = bookService.updateBook(id, request);
+        return ApiResponse.success("更新成功", book);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "删除书籍（管理员）")
     public ApiResponse<Void> deleteBook(@PathVariable Long id) {
-        // TODO: 实现删除逻辑
-        return null;
+        bookService.deleteBook(id);
+        return ApiResponse.success("删除成功");
     }
 }
