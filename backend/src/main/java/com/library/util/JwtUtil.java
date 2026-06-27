@@ -3,25 +3,34 @@ package com.library.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
-@Component
 public class JwtUtil {
 
     private final SecretKey key;
     private final long expiration;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret,
-                   @Value("${jwt.expiration}") long expiration) {
+    public JwtUtil() {
+        Properties props = new Properties();
+        try (InputStream is = JwtUtil.class.getClassLoader().getResourceAsStream("application.properties")) {
+            if (is == null) {
+                throw new RuntimeException("找不到配置文件 application.properties");
+            }
+            props.load(is);
+        } catch (IOException e) {
+            throw new RuntimeException("无法加载配置文件", e);
+        }
+        String secret = props.getProperty("jwt.secret");
+        this.expiration = Long.parseLong(props.getProperty("jwt.expiration", "604800000"));
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.expiration = expiration;
     }
 
     public String generateToken(Long userId, String username, String role) {
@@ -69,14 +78,5 @@ public class JwtUtil {
     public String getRole(String token) {
         Claims claims = parseToken(token);
         return claims.get("role", String.class);
-    }
-
-    public boolean isTokenExpired(String token) {
-        try {
-            Claims claims = parseToken(token);
-            return claims.getExpiration().before(new Date());
-        } catch (Exception e) {
-            return true;
-        }
     }
 }

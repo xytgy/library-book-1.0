@@ -17,22 +17,6 @@ public class Book {
 
     public Book() {}
 
-    public Book(Long id, String isbn, String title, String author, String category, String location,
-                Integer totalQuantity, Integer availableQuantity, String description,
-                LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.isbn = isbn;
-        this.title = title;
-        this.author = author;
-        this.category = category;
-        this.location = location;
-        this.totalQuantity = totalQuantity;
-        this.availableQuantity = availableQuantity;
-        this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

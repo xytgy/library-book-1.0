@@ -50,8 +50,8 @@ CREATE TABLE borrow_records (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO users (username, password, name, email, role) VALUES
-('admin', '$2b$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', '管理员', 'admin@library.com', 'admin'),
-('user1', '$2b$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', '张三', 'zhangsan@example.com', 'user');
+('admin', '$2a$10$nsBRs8RxEo260Aes4t833.NMlwc/ZVoMusr835aYJPJcFIpxVr0KK', '管理员', 'admin@library.com', 'admin'),
+('user1', '$2a$10$nsBRs8RxEo260Aes4t833.NMlwc/ZVoMusr835aYJPJcFIpxVr0KK', '张三', 'zhangsan@example.com', 'user');
 
 INSERT INTO books (isbn, title, author, category, location, total_quantity, available_quantity, description) VALUES
 ('9787111111111', 'JavaScript高级程序设计', 'Nicholas C. Zakas', '编程', 'A-01-01', 5, 5, '经典的JavaScript学习书籍'),

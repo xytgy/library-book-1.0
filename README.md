@@ -1,159 +1,165 @@
 # 图书馆管理系统
 
-基于 Vue 3 + Java 17 + Spring Boot 3.2 + MySQL 的图书馆管理系统。
+基于 Java SE + JDBC + MySQL 的控制台图书馆管理系统。
 
 ## 功能特性
 
-- 用户认证：登录、注册
-- 书籍管理：添加、编辑、删除、搜索书籍
+- 用户认证：登录、注册（BCrypt 密码加密）
+- 书籍管理：添加、编辑、删除、搜索书籍（管理员）
 - 借阅管理：借书、还书、查看借阅记录
 - 用户管理：管理员可管理用户
 - 角色权限：普通用户和管理员权限分离
+- 彩色终端界面：使用 jansi 实现美化输出
 
 ## 技术栈
 
-### 前端
-- Vue 3
-- Vue Router 4
-- Pinia
-- Element Plus
-- Axios
-- Vite
-
-### 后端
-- Java 17
-- Spring Boot 3.2
-- JDBC
-- MySQL
-- JWT
-- Swagger UI
+- Java 17（纯 Java SE，无框架）
+- JDBC + HikariCP 连接池
+- MySQL 数据库
+- JWT 认证（jjwt）
+- BCrypt 密码加密
+- jansi 彩色终端输出
+- Logback 日志
 
 ## 项目结构
 
 ```
-项目/
-├── backend/          # 后端代码 (Spring Boot)
-│   ├── pom.xml       # Maven 配置
+library-book-1.0/
+├── backend/                        # 后端代码（纯 Java SE）
+│   ├── pom.xml                     # Maven 配置
 │   ├── src/main/java/com/library/
-│   │   ├── LibraryApplication.java
-│   │   ├── config/       # 配置类
-│   │   ├── controller/   # 控制器
-│   │   ├── service/      # 服务层
-│   │   ├── model/        # 实体类
-│   │   ├── dto/          # 数据传输对象
-│   │   ├── filter/       # 过滤器
-│   │   ├── exception/    # 异常处理
-│   │   └── util/         # 工具类
+│   │   ├── Main.java               # 程序入口
+│   │   ├── model/                  # 实体类
+│   │   │   ├── User.java
+│   │   │   ├── Book.java
+│   │   │   └── BorrowRecord.java
+│   │   ├── dao/                    # 数据访问层（纯 JDBC）
+│   │   │   ├── UserDao.java
+│   │   │   ├── BookDao.java
+│   │   │   └── BorrowRecordDao.java
+│   │   ├── service/                # 业务逻辑层
+│   │   │   ├── AuthService.java
+│   │   │   ├── BookService.java
+│   │   │   ├── BorrowService.java
+│   │   │   └── UserService.java
+│   │   ├── console/                # 控制台菜单
+│   │   │   ├── ConsoleHelper.java
+│   │   │   ├── AuthMenu.java
+│   │   │   ├── BookMenu.java
+│   │   │   ├── BorrowMenu.java
+│   │   │   └── UserMenu.java
+│   │   ├── db/                     # 数据库连接管理
+│   │   │   └── DatabaseUtil.java
+│   │   ├── exception/              # 异常处理
+│   │   │   ├── BusinessException.java
+│   │   │   └── ErrorCode.java
+│   │   └── util/
+│   │       └── JwtUtil.java        # JWT 工具
 │   └── src/main/resources/
-│       ├── application.yml
-│       └── logback-spring.xml
-├── frontend/         # 前端代码
-│   ├── src/
-│   │   ├── api/      # API 封装
-│   │   ├── router/   # 路由
-│   │   ├── store/    # 状态管理
-│   │   ├── views/    # 页面组件
-│   │   ├── App.vue
-│   │   └── main.js
-│   ├── index.html
-│   ├── vite.config.js
-│   └── package.json
-├── database/         # 数据库
-│   └── init.sql      # 初始化脚本
+│       ├── application.properties  # 配置文件
+│       └── logback.xml             # 日志配置
+├── database/
+│   └── init.sql                    # 数据库初始化脚本
 └── README.md
 ```
 
 ## 快速开始
 
-### 1. 数据库配置
+### 1. 初始化数据库
 
 确保已安装 MySQL，然后执行初始化脚本：
 
-**Windows (PowerShell):**
-```powershell
-# 方式1: 使用提供的批处理文件（推荐）
-init-db.bat
-
-# 方式2: 使用 Get-Content 管道
-Get-Content database\init.sql | mysql -u root -p
-```
-
-**Windows (CMD) 或 Linux/Mac:**
 ```bash
-mysql -u root -p < database/init.sql
+mysql -u root -p123456 < database/init.sql
 ```
 
-或者在 MySQL 客户端中手动执行 `database/init.sql` 文件内容。
+### 2. 修改数据库密码
 
-### 2. 后端配置
+编辑 `backend/src/main/resources/application.properties`：
 
-修改 `backend/src/main/resources/application.yml` 文件，配置数据库连接信息：
-
-```yaml
-server:
-  port: 8080
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/library_management
-    username: root
-    password: 你的数据库密码
+```properties
+db.url=jdbc:mysql://localhost:3306/library_management?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+db.user=root
+db.password=你的数据库密码
 ```
 
-启动后端：
+### 3. 编译打包
 
 ```bash
 cd backend
-mvn spring-boot:run
+mvn clean package -DskipTests
 ```
 
-后端服务将在 http://localhost:8080 启动
-
-API 文档（Swagger UI）：http://localhost:8080/swagger-ui.html
-
-### 3. 前端配置
-
-安装前端依赖并启动：
+### 4. 运行
 
 ```bash
-cd frontend
-npm install
-npm run dev
+java -jar target/library-backend-1.0.0.jar
 ```
-
-前端服务将在 http://localhost:5173 启动
 
 ## 默认账号
 
-系统初始化时会创建以下测试账号（密码均为：`password`）：
-
 | 用户名 | 密码 | 角色 |
 |--------|------|------|
-| admin | password | 管理员 |
-| user1 | password | 普通用户 |
+| admin | 123456 | 管理员 |
+| user1 | 123456 | 普通用户 |
 
-> 注意：首次登录后，建议立即修改管理员密码！
+## 操作说明
 
-## API 文档
+### 未登录菜单
+```
+1. 用户登录
+2. 用户注册
+0. 退出系统
+```
 
-### 认证接口
-- `POST /api/auth/register` - 用户注册
-- `POST /api/auth/login` - 用户登录
+### 普通用户菜单
+```
+1. 书籍浏览    — 查看书籍列表、搜索、查看详情
+2. 借阅管理    — 借书、还书、查看我的借阅记录
+0. 退出登录
+```
 
-### 书籍接口
-- `GET /api/books` - 获取书籍列表
-- `GET /api/books/:id` - 获取书籍详情
-- `POST /api/books` - 添加书籍（管理员）
-- `PUT /api/books/:id` - 更新书籍（管理员）
-- `DELETE /api/books/:id` - 删除书籍（管理员）
+### 管理员菜单
+```
+1. 书籍管理    — 增删改查书籍
+2. 借阅管理    — 借书、还书、查看全部借阅记录
+3. 用户管理    — 查看、编辑、删除用户
+4. 退出登录
+```
 
-### 借阅接口
-- `GET /api/borrow/my` - 我的借阅记录
-- `POST /api/borrow/:bookId` - 借书
-- `POST /api/borrow/return/:recordId` - 还书
-- `GET /api/borrow/all` - 所有借阅记录（管理员）
+## 数据库表结构
 
-### 用户接口
-- `GET /api/users` - 用户列表（管理员）
-- `GET /api/users/:id` - 用户详情
-- `PUT /api/users/:id` - 更新用户
-- `DELETE /api/users/:id` - 删除用户（管理员）
+### users 表
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | INT | 主键自增 |
+| username | VARCHAR(50) | 用户名，唯一 |
+| password | VARCHAR(255) | BCrypt 加密密码 |
+| name | VARCHAR(50) | 姓名 |
+| email | VARCHAR(100) | 邮箱 |
+| role | ENUM | user/admin |
+| status | TINYINT | 1正常/0禁用 |
+
+### books 表
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | INT | 主键自增 |
+| isbn | VARCHAR(20) | ISBN，唯一 |
+| title | VARCHAR(200) | 书名 |
+| author | VARCHAR(100) | 作者 |
+| category | VARCHAR(50) | 分类 |
+| location | VARCHAR(50) | 位置 |
+| total_quantity | INT | 总库存 |
+| available_quantity | INT | 可借数量 |
+| description | TEXT | 简介 |
+
+### borrow_records 表
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | INT | 主键自增 |
+| user_id | INT | 用户ID，外键 |
+| book_id | INT | 书籍ID，外键 |
+| borrow_date | DATETIME | 借阅日期 |
+| due_date | DATETIME | 应还日期（30天） |
+| return_date | DATETIME | 实际归还日期 |
+| status | ENUM | borrowing/returned |
