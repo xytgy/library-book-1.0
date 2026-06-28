@@ -6,6 +6,7 @@ import com.library.db.DatabaseUtil;
 import com.library.exception.BusinessException;
 import com.library.model.Book;
 import com.library.model.BorrowRecord;
+import com.library.util.AuditLogger;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
@@ -76,6 +77,7 @@ public class BorrowService {
             bookDao.decreaseAvailable(conn, bookId);
 
             conn.commit();
+            AuditLogger.log(String.valueOf(userId), "借书", "书籍ID:" + bookId);
         } catch (BusinessException e) {
             if (conn != null) {
                 try { conn.rollback(); } catch (Exception ignored) {}
@@ -118,6 +120,7 @@ public class BorrowService {
             bookDao.increaseAvailable(conn, record.getBookId());
 
             conn.commit();
+            AuditLogger.log(String.valueOf(userId), "还书", "借阅记录ID:" + recordId);
         } catch (BusinessException e) {
             if (conn != null) {
                 try { conn.rollback(); } catch (Exception ignored) {}

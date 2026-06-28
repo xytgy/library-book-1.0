@@ -8,6 +8,7 @@
 - 书籍管理：添加、编辑、删除、搜索书籍（管理员）
 - 借阅管理：借书、还书、查看借阅记录
 - 用户管理：管理员可管理用户
+- 审计日志：记录所有操作，支持查询、统计、导出（管理员）
 - 角色权限：普通用户和管理员权限分离
 - 彩色终端界面：使用 jansi 实现美化输出
 
@@ -47,14 +48,16 @@ library-book-1.0/
 │   │   │   ├── AuthMenu.java
 │   │   │   ├── BookMenu.java
 │   │   │   ├── BorrowMenu.java
-│   │   │   └── UserMenu.java
+│   │   │   ├── UserMenu.java
+│   │   │   └── AuditMenu.java      # 审计日志菜单
 │   │   ├── db/                     # 数据库连接管理
 │   │   │   └── DatabaseUtil.java
 │   │   ├── exception/              # 异常处理
 │   │   │   ├── BusinessException.java
 │   │   │   └── ErrorCode.java
 │   │   └── util/
-│   │       └── JwtUtil.java        # JWT 工具
+│   │       ├── JwtUtil.java        # JWT 工具
+│   │       └── AuditLogger.java    # 审计日志工具
 │   └── src/main/resources/
 │       ├── application.properties  # 配置文件
 │       └── logback.xml             # 日志配置
@@ -124,8 +127,21 @@ java -jar target/library-backend-1.0.0.jar
 1. 书籍管理    — 增删改查书籍
 2. 借阅管理    — 借书、还书、查看全部借阅记录
 3. 用户管理    — 查看、编辑、删除用户
-4. 退出登录
+4. 审计日志    — 查看、搜索、统计、导出操作日志
+5. 退出登录
 ```
+
+## 审计日志功能
+
+管理员可查看所有操作记录：
+- 查看全部日志（分页浏览）
+- 按用户搜索
+- 按日期搜索
+- 按操作类型搜索（借书/还书/添加/更新/删除）
+- 统计分析（各操作类型次数）
+- 导出日志到文件
+
+日志存储位置：`logs/audit.log`
 
 ## 数据库表结构
 

@@ -49,12 +49,13 @@ public class Main {
         BookMenu bookMenu = new BookMenu(bookService);
         BorrowMenu borrowMenu = new BorrowMenu(borrowService, bookService);
         UserMenu userMenu = new UserMenu(userService);
+        AuditMenu auditMenu = new AuditMenu();
 
         while (true) {
             ConsoleHelper.clearScreen();
             showMainMenu();
 
-            int maxChoice = currentUserId == null ? 2 : ("admin".equals(currentRole) ? 4 : 2);
+            int maxChoice = currentUserId == null ? 2 : ("admin".equals(currentRole) ? 5 : 2);
             int choice = ConsoleHelper.readInt("  请选择: ", 0, maxChoice);
 
             switch (choice) {
@@ -91,7 +92,8 @@ public class Main {
                         userMenu.showMenu(currentUserId);
                     }
                 }
-                case 4 -> logout();
+                case 4 -> auditMenu.showMenu();
+                case 5 -> logout();
                 case 0 -> {
                     if (currentUserId == null) {
                         System.out.println(Ansi.ansi().fgGreen().a("\n  再见！\n").reset());
@@ -126,7 +128,8 @@ public class Main {
                 ConsoleHelper.printMenuLine("1. 书籍管理");
                 ConsoleHelper.printMenuLine("2. 借阅管理");
                 ConsoleHelper.printMenuLine("3. 用户管理");
-                ConsoleHelper.printMenuLine("4. 退出登录");
+                ConsoleHelper.printMenuLine("4. 审计日志");
+                ConsoleHelper.printMenuLine("5. 退出登录");
             } else {
                 ConsoleHelper.printMenuLine("1. 书籍浏览");
                 ConsoleHelper.printMenuLine("2. 借阅管理");

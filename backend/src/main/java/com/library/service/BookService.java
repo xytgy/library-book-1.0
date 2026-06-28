@@ -4,6 +4,7 @@ import com.library.dao.BookDao;
 import com.library.dao.BorrowRecordDao;
 import com.library.exception.BusinessException;
 import com.library.model.Book;
+import com.library.util.AuditLogger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class BookService {
         book.setAvailableQuantity(totalQuantity);
         book.setDescription(description);
         bookDao.save(book);
+        AuditLogger.log("system", "添加书籍", title);
         return book;
     }
 
@@ -86,6 +88,7 @@ public class BookService {
         book.setAvailableQuantity(Math.max(0, book.getAvailableQuantity() + delta));
         book.setDescription(description);
         bookDao.update(book);
+        AuditLogger.log("system", "更新书籍", title + "(ID:" + id + ")");
         return book;
     }
 
@@ -97,6 +100,7 @@ public class BookService {
         if (borrowRecordDao.existsActiveBorrowByBookId(id)) {
             throw new BusinessException(400, "该书籍有未归还的借阅记录，无法删除");
         }
+        AuditLogger.log("system", "删除书籍", book.getTitle() + "(ID:" + id + ")");
         bookDao.deleteById(id);
     }
 }

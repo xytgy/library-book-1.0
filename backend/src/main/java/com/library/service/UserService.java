@@ -4,6 +4,7 @@ import com.library.dao.BorrowRecordDao;
 import com.library.dao.UserDao;
 import com.library.exception.BusinessException;
 import com.library.model.User;
+import com.library.util.AuditLogger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +60,7 @@ public class UserService {
         }
 
         userDao.update(user);
+        AuditLogger.log(String.valueOf(currentUserId), "更新用户", "目标用户ID:" + id);
         return user;
     }
 
@@ -70,6 +72,7 @@ public class UserService {
         if (borrowRecordDao.existsActiveBorrowByUserId(id)) {
             throw new BusinessException(400, "该用户有未归还的借阅记录，无法删除");
         }
+        AuditLogger.log("system", "删除用户", "用户ID:" + id);
         userDao.deleteById(id);
     }
 }
