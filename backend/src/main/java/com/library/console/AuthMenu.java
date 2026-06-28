@@ -36,9 +36,9 @@ public class AuthMenu {
         ConsoleHelper.clearScreen();
         ConsoleHelper.printTitle("用户注册");
 
-        String username = ConsoleHelper.readString("  用户名(3-50位): ", true);
-        String password = ConsoleHelper.readString("  密码(6-50位): ", true);
-        String name = ConsoleHelper.readString("  姓名(2-50位): ", true);
+        String username = ConsoleHelper.readString("  用户名(4-20位): ", true);
+        String password = ConsoleHelper.readString("  密码(8-20位): ", true);
+        String name = ConsoleHelper.readString("  姓名(2-10位): ", true);
         String email = ConsoleHelper.readString("  邮箱: ", false);
 
         try {

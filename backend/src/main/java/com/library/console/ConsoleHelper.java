@@ -109,7 +109,13 @@ public class ConsoleHelper {
     public static int readInt(String prompt) {
         while (true) {
             System.out.print(Ansi.ansi().fgCyan().a(prompt).reset());
-            String input = scanner.nextLine().trim();
+            String input;
+            try {
+                input = scanner.nextLine().trim();
+            } catch (java.util.NoSuchElementException e) {
+                System.exit(0);
+                return 0;
+            }
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
@@ -128,7 +134,12 @@ public class ConsoleHelper {
 
     public static String readString(String prompt) {
         System.out.print(Ansi.ansi().fgCyan().a(prompt).reset());
-        return scanner.nextLine().trim();
+        try {
+            return scanner.nextLine().trim();
+        } catch (java.util.NoSuchElementException e) {
+            System.exit(0);
+            return "";
+        }
     }
 
     public static String readString(String prompt, boolean required) {

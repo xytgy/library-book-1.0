@@ -252,7 +252,14 @@ public class BorrowRecordDao {
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM borrow_records WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
-        appendConditions(sql, params, status, userId);
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(status);
+        }
+        if (userId != null) {
+            sql.append(" AND user_id = ?");
+            params.add(userId);
+        }
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -273,11 +280,11 @@ public class BorrowRecordDao {
 
     private void appendConditions(StringBuilder sql, List<Object> params, String status, Long userId) {
         if (status != null && !status.isEmpty()) {
-            sql.append(" AND status = ?");
+            sql.append(" AND br.status = ?");
             params.add(status);
         }
         if (userId != null) {
-            sql.append(" AND user_id = ?");
+            sql.append(" AND br.user_id = ?");
             params.add(userId);
         }
     }

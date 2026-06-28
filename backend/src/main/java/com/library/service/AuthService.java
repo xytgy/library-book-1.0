@@ -46,6 +46,16 @@ public class AuthService {
         if (userDao.existsByUsername(username)) {
             throw new BusinessException(400, "用户名已存在");
         }
+        if (username.length() < 4 || username.length() > 20) {
+            throw new BusinessException(400, "用户名长度必须在4到20之间");
+        }
+
+        if (password.length() < 8 || password.length() > 20) {
+            throw new BusinessException(400, "密码长度必须在8到20之间");
+        }
+        if (name.length() < 2 || name.length() > 10) {
+            throw new BusinessException(400, "姓名长度必须在2到10之间");
+        }
 
         User user = new User();
         user.setUsername(username);
