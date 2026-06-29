@@ -55,7 +55,14 @@ public class Main {
             ConsoleHelper.clearScreen();
             showMainMenu();
 
-            int maxChoice = currentUserId == null ? 2 : ("admin".equals(currentRole) ? 5 : 2);
+            int maxChoice;
+            if (currentUserId == null) {
+                maxChoice = 2;
+            } else if ("admin".equals(currentRole)) {
+                maxChoice = 5;
+            } else {
+                maxChoice = 2;
+            }
             int choice = ConsoleHelper.readInt("  请选择: ", 0, maxChoice);
 
             switch (choice) {
